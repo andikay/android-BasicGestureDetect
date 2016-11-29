@@ -28,55 +28,49 @@ import com.example.android.common.logger.LogFragment;
 import com.example.android.common.logger.LogWrapper;
 import com.example.android.common.logger.MessageOnlyLogFilter;
 
-/**
- * A simple launcher activity containing a summary sample description
- * and a few action bar buttons.
- */
-public class MainActivity extends SampleActivityBase {
+object MainActivity {
+  val TAG  = "MainActivity"
+  val FRAGTAG  = "BasicGestureDetectFragment"
+}
 
-    public static final String TAG = "MainActivity";
-
-    public static final String FRAGTAG = "BasicGestureDetectFragment";
+class MainActivity extends SampleActivityBase {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    override protected def onCreate(savedInstanceState: Bundle) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (getSupportFragmentManager().findFragmentByTag(FRAGTAG) == null ) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            BasicGestureDetectFragment fragment = new BasicGestureDetectFragment();
-            transaction.add(fragment, FRAGTAG);
+        if (getSupportFragmentManager().findFragmentByTag(MainActivity.FRAGTAG) == null ) {
+            val transaction:FragmentTransaction = getSupportFragmentManager().beginTransaction();
+            val fragment:BasicGestureDetectFragment = new BasicGestureDetectFragment();
+            transaction.add(fragment, MainActivity.FRAGTAG);
             transaction.commit();
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    override def onCreateOptionsMenu(menu: Menu):Boolean = {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
-    /** Create a chain of targets that will receive log data */
     @Override
-    public void initializeLogging() {
+    override def initializeLogging() {
         // Wraps Android's native log framework.
-        LogWrapper logWrapper = new LogWrapper();
+        val logWrapper:LogWrapper = new LogWrapper();
         // Using Log, front-end to the logging chain, emulates android.util.log method signatures.
         Log.setLogNode(logWrapper);
 
         // Filter strips out everything except the message text.
-        MessageOnlyLogFilter msgFilter = new MessageOnlyLogFilter();
+        val msgFilter:MessageOnlyLogFilter = new MessageOnlyLogFilter();
         logWrapper.setNext(msgFilter);
 
         // On screen logging via a fragment with a TextView.
-        LogFragment logFragment = (LogFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.log_fragment);
+        val logFragment: LogFragment = getSupportFragmentManager.findFragmentById(R.id.log_fragment).asInstanceOf[LogFragment];
         msgFilter.setNext(logFragment.getLogView());
-        logFragment.getLogView().setTextAppearance(this, R.style.Log);
+        //logFragment.getLogView().setTextAppearance(this, R.style.Log);
         logFragment.getLogView().setBackgroundColor(Color.WHITE);
 
-
-        Log.i(TAG, "Ready");
+        Log.i(MainActivity.TAG, "Ready");
     }
 }

@@ -42,26 +42,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
 
-/**
- * Simple fraggment which contains a LogView and uses is to output log data it receives
- * through the LogNode interface.
- */
-public class LogFragment extends Fragment {
 
-    private LogView mLogView;
-    private ScrollView mScrollView;
+class LogFragment extends Fragment {
 
-    public LogFragment() {}
+    private var mLogView:LogView = null
+    private var mScrollView:ScrollView = null
 
-    public View inflateViews() {
+    def inflateViews():View = {
         mScrollView = new ScrollView(getActivity());
-        ViewGroup.LayoutParams scrollParams = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
+        val scrollParams:ViewGroup.LayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mScrollView.setLayoutParams(scrollParams);
 
         mLogView = new LogView(getActivity());
-        ViewGroup.LayoutParams logParams = new ViewGroup.LayoutParams(scrollParams);
+        val logParams:ViewGroup.LayoutParams = new ViewGroup.LayoutParams(scrollParams);
         logParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         mLogView.setLayoutParams(logParams);
         mLogView.setClickable(true);
@@ -69,41 +62,40 @@ public class LogFragment extends Fragment {
         mLogView.setTypeface(Typeface.MONOSPACE);
 
         // Want to set padding as 16 dips, setPadding takes pixels.  Hooray math!
-        int paddingDips = 16;
-        double scale = getResources().getDisplayMetrics().density;
-        int paddingPixels = (int) ((paddingDips * (scale)) + .5);
+        val paddingDips = 16;
+        val scale:Double = getResources().getDisplayMetrics().density;
+        val paddingPixels = ((paddingDips * (scale)) + .5).toInt;
         mLogView.setPadding(paddingPixels, paddingPixels, paddingPixels, paddingPixels);
         mLogView.setCompoundDrawablePadding(paddingPixels);
 
         mLogView.setGravity(Gravity.BOTTOM);
-        mLogView.setTextAppearance(getActivity(), android.R.style.TextAppearance_Holo_Medium);
+        //mLogView.setTextAppearance(getActivity(), android.R.style.TextAppearance_Holo_Medium);
 
         mScrollView.addView(mLogView);
         return mScrollView;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    override def onCreateView(inflater: LayoutInflater, container: ViewGroup, savedInstanceState: Bundle):View = {
 
-        View result = inflateViews();
+        val result:View = inflateViews()
 
         mLogView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            def beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            def onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
 
             @Override
-            public void afterTextChanged(Editable s) {
-                mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            def afterTextChanged(s: Editable) {
+                mScrollView.fullScroll(View.FOCUS_DOWN);
             }
         });
         return result;
     }
 
-    public LogView getLogView() {
+    def getLogView():LogView = {
         return mLogView;
     }
 }
